@@ -1,0 +1,20 @@
+{
+  "short_name": "DoorStep",
+  "name": "DoorStep Malawi",
+  "icons": [
+    {
+      "src": "https://ais-pre-ixzmergjfmidullca732u3-620085732053.europe-west2.run.app/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://ais-pre-ixzmergjfmidullca732u3-620085732053.europe-west2.run.app/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#00B14F",
+  "background_color": "#00B14F"
+}

@@ -1,0 +1,216 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the DoorStep Malawi platform.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["consumer", "merchant", "parker", "driver", "admin"] },
+        "city": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "walletBalance": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Shop": {
+      "title": "Shop",
+      "description": "A merchant's digital shop.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "merchantId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "city": { "type": "string" },
+        "category": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "merchantId", "name", "city"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "An item listed in a shop.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "shopId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "stock": { "type": "integer" }
+      },
+      "required": ["id", "shopId", "name", "price"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A delivery order pipeline.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "consumerId": { "type": "string" },
+        "merchantId": { "type": "string" },
+        "parkerId": { "type": "string" },
+        "driverId": { "type": "string" },
+        "items": { "type": "array", "items": { "type": "object" } },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["ordered", "parker_assigned", "items_packed", "driver_dispatched", "delivered"] },
+        "deliveryAddress": { "type": "string" },
+        "city": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "consumerId", "items", "totalAmount", "status"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "A message in a community or order chat.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["image", "video", "audio"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "reactions": { "type": "object" }
+      },
+      "required": ["id", "chatId", "senderId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/shops/{shopId}": { "schema": "Shop", "description": "Merchant shops" },
+    "/products/{productId}": { "schema": "Product", "description": "Global product catalog" },
+    "/orders/{orderId}": { "schema": "Order", "description": "Order tracking" },
+    "/chats/{chatId}/messages/{messageId}": { "schema": "ChatMessage", "description": "Chat messages" },
+    "/posts/{postId}": { "schema": "Post", "description": "Social media posts" },
+    "/status/{statusId}": { "schema": "StatusUpdate", "description": "User status updates" }
+  },
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the DoorStep Malawi platform.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["consumer", "merchant", "parker", "driver", "admin"] },
+        "city": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "walletBalance": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Shop": {
+      "title": "Shop",
+      "description": "A merchant's digital shop.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "merchantId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "city": { "type": "string" },
+        "category": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "merchantId", "name", "city"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "An item listed in a shop.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "shopId": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "stock": { "type": "integer" }
+      },
+      "required": ["id", "shopId", "name", "price"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "A delivery order pipeline.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "consumerId": { "type": "string" },
+        "merchantId": { "type": "string" },
+        "parkerId": { "type": "string" },
+        "driverId": { "type": "string" },
+        "items": { "type": "array", "items": { "type": "object" } },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["ordered", "parker_assigned", "items_packed", "driver_dispatched", "delivered"] },
+        "deliveryAddress": { "type": "string" },
+        "city": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "consumerId", "items", "totalAmount", "status"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "A message in a community or order chat.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["image", "video", "audio"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "reactions": { "type": "object" }
+      },
+      "required": ["id", "chatId", "senderId", "createdAt"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "A social media post.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "text": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["image", "video", "audio"] },
+        "likes": { "type": "array", "items": { "type": "string" } },
+        "dislikes": { "type": "array", "items": { "type": "string" } },
+        "comments": { "type": "array", "items": { "type": "object" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorId", "text", "createdAt"]
+    },
+    "StatusUpdate": {
+      "title": "StatusUpdate",
+      "description": "A user status update.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "mediaType": { "type": "string", "enum": ["image", "video"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "authorId", "mediaUrl", "createdAt", "expiresAt"]
+    }
+  }
+}

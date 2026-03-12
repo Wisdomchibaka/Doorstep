@@ -1,0 +1,9 @@
+{
+  "name": "DoorStep Malawi",
+  "description": "A premium city-wide marketplace and logistics engine for Malawi, connecting consumers, merchants, parkers, and drivers.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera",
+    "microphone"
+  ]
+}

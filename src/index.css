@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Questrial&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-grab-green: #00B14F;
+  --color-grab-dark: #008D3F;
+  --font-sans: "League Spartan", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-[#00B14F] text-white font-sans antialiased overflow-x-hidden;
+    font-family: "League Spartan", sans-serif;
+  }
+}
+
+.glass-card {
+  @apply bg-white text-black rounded-2xl shadow-sm border border-black/5;
+}
+
+.btn-primary {
+  @apply bg-white text-[#00B14F] font-black py-4 px-6 rounded-full transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-black/5;
+}
+
+.btn-outline {
+  @apply border-2 border-white text-white font-black py-4 px-6 rounded-full transition-all active:scale-95;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.category-pill {
+  @apply flex flex-col items-center gap-2 flex-shrink-0 transition-transform active:scale-90;
+}
+

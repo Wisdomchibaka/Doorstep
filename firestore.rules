@@ -1,0 +1,110 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: users
+    // Fields: uid, email, displayName, role, city, phoneNumber, walletBalance, createdAt
+    //
+    // Collection: shops
+    // Fields: id, merchantId, name, description, city, category, logoUrl, createdAt
+    //
+    // Collection: products (subcollection of shops)
+    // Fields: id, shopId, name, description, price, imageUrl, stock
+    //
+    // Collection: orders
+    // Fields: id, consumerId, merchantId, parkerId, driverId, items, totalAmount, status, deliveryAddress, city, createdAt, updatedAt
+    //
+    // Collection: chats (and messages subcollection)
+    // Fields: id, chatId, senderId, senderName, text, mediaUrl, mediaType, createdAt, reactions
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "wisdomchibaka1@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function hasRole(role) {
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == role;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isOwner(userId) && (request.resource.data.role == resource.data.role || isAdmin());
+    }
+
+    match /shops/{shopId} {
+      allow read: if true;
+      allow create: if hasRole('merchant') || isAdmin();
+      allow update: if (isAuthenticated() && resource.data.merchantId == request.auth.uid) || isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if hasRole('merchant') || isAdmin();
+      allow update, delete: if (isAuthenticated() && 
+        get(/databases/$(database)/documents/shops/$(resource.data.shopId)).data.merchantId == request.auth.uid) || isAdmin();
+    }
+
+    match /posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        resource.data.authorId == request.auth.uid || 
+        request.resource.data.diff(resource.data).affectedKeys().hasAny(['likes', 'dislikes', 'comments'])
+      );
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+    }
+
+    match /status/{statusId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.consumerId || 
+        request.auth.uid == resource.data.merchantId || 
+        request.auth.uid == resource.data.parkerId || 
+        request.auth.uid == resource.data.driverId || 
+        (hasRole('parker') && resource.data.status in ['ordered', 'parker_assigned']) ||
+        (hasRole('driver') && resource.data.status in ['items_packed', 'driver_dispatched']) ||
+        isAdmin()
+      );
+      allow create: if hasRole('consumer') || isAdmin();
+      allow update: if isAuthenticated(); 
+    }
+
+    match /chats/{chatId} {
+      allow read: if isAuthenticated();
+      
+      match /messages/{messageId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated();
+        allow update: if isAuthenticated() && (
+          resource.data.senderId == request.auth.uid || 
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['reactions'])
+        );
+        allow delete: if isAuthenticated() && resource.data.senderId == request.auth.uid;
+      }
+    }
+  }
+}
